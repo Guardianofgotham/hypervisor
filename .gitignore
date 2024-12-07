@@ -1,0 +1,17 @@
+# Ignore the PostgreSQL data directory
+postgres_data/
+
+# Ignore Python cache files
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore log files, backups, and temporary editor files
+*.log
+*.bak
+*.swp
