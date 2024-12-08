@@ -9,6 +9,7 @@ class DeploymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deployment
         fields = [
+            "id",
             "name",
             "cluster",
             "docker_image_path",

@@ -25,7 +25,12 @@ class ClusterViewset(viewsets.ViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                     data="You are not authorized for this action",
                 )
-            cluster = Cluster.objects.create(**data)
+            cluster = Cluster.objects.create(
+                **data,
+                available_ram=data["total_ram"],
+                available_cpu=data["total_cpu"],
+                available_gpu=data["total_gpu"],
+            )
 
         except Organization.DoesNotExist:
             return Response(
@@ -45,7 +50,7 @@ class ClusterViewset(viewsets.ViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                     data="You're not allowed to perform this action",
                 )
-            deployments = Deployment.objects.filter(cluster=cluster)
+            deployments = Deployment.objects.filter(cluster=cluster).order_by("-id")
             return Response(
                 status=status.HTTP_200_OK,
                 data={

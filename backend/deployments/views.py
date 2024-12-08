@@ -26,9 +26,9 @@ class DeploymentViewset(viewsets.ViewSet):
                 )
 
             if (
-                cluster.ram < data["required_ram"]
-                or cluster.cpu < data["required_cpu"]
-                or cluster.gpu < data["required_gpu"]
+                cluster.available_ram < data["required_ram"]
+                or cluster.available_cpu < data["required_cpu"]
+                or cluster.available_gpu < data["required_gpu"]
             ):
                 return Response(
                     status=status.HTTP_400_BAD_REQUEST,
@@ -38,6 +38,9 @@ class DeploymentViewset(viewsets.ViewSet):
             deployment = Deployment.objects.create(
                 **data, status=DeploymentStatus.PENDING, duration=randint(10, 60)
             )
+            from .tasks import queue_deployment
+
+            queue_deployment.delay(deployment.id)
         except Cluster.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND, data="Cluster not found")
 

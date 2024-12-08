@@ -7,6 +7,10 @@ from organizations.models import Organization
 class Cluster(models.Model):
     name = models.CharField(null=False)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    ram = models.IntegerField(null=False)
-    cpu = models.IntegerField(null=False)
-    gpu = models.IntegerField(null=False)
+    total_ram = models.IntegerField(null=False)
+    total_cpu = models.IntegerField(null=False)
+    total_gpu = models.IntegerField(null=False)
+
+    available_ram = models.IntegerField(null=False)
+    available_cpu = models.IntegerField(null=False)
+    available_gpu = models.IntegerField(null=False)
