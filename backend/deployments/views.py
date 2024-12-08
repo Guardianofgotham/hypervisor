@@ -24,6 +24,17 @@ class DeploymentViewset(viewsets.ViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                     data="You're not allowed to perform this action",
                 )
+
+            if (
+                cluster.ram < data["required_ram"]
+                or cluster.cpu < data["required_cpu"]
+                or cluster.gpu < data["required_gpu"]
+            ):
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data="It is impossible to make this deployment, resources needed for deployment exceeds cluster total resources",
+                )
+
             deployment = Deployment.objects.create(
                 **data, status=DeploymentStatus.PENDING, duration=randint(10, 60)
             )
