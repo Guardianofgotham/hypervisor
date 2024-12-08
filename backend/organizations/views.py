@@ -1,5 +1,7 @@
 from rest_framework.viewsets import ViewSet
 
+from clusters.models import Cluster
+from clusters.serializers import ClusterSerializer
 from users.serializers import UserSerializer
 from organizations.models import Organization
 from organizations.serializers import (
@@ -19,6 +21,9 @@ class OrganizationViewSet(ViewSet):
     serializer_class = CreateOrganizationSerializer
 
     def create(self, request):
+        """
+        Create organization
+        """
         data = CreateOrganizationSerializer(request.data).get_validated_data()
         current_user = request.user
         org: Organization = Organization.objects.create(
@@ -32,6 +37,9 @@ class OrganizationViewSet(ViewSet):
 
     @action(methods=["POST"], detail=False, serializer_class=JoinOrganizationSerializer)
     def join(self, request):
+        """
+        Join organization with invite code
+        """
         data = JoinOrganizationSerializer(request.data).get_validated_data()
 
         try:
@@ -51,6 +59,11 @@ class OrganizationViewSet(ViewSet):
         """
         try:
             org = Organization.objects.get(pk=pk)
+            if request.user not in org.users.all():
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data="You are not authorized for this action",
+                )
             return Response(
                 data={
                     "current_organization": OrganizationSerializer(org).data,
@@ -77,3 +90,21 @@ class OrganizationViewSet(ViewSet):
                 ).data,
             }
         )
+
+    @action(methods=["GET"], detail=True)
+    def clusters(self, request, pk=None):
+        try:
+            org = Organization.objects.get(id=pk)
+            if request.user not in org.users.all():
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data="You're not allowed to perform this action",
+                )
+            clusters = Cluster.objects.filter(organization=org)
+
+            return Response(
+                status=status.HTTP_200_OK,
+                data={"clusters": ClusterSerializer(clusters, many=True).data},
+            )
+        except Organization.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND, data="Org not found")

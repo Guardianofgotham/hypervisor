@@ -18,6 +18,9 @@ class UserViewSet(ViewSet):
     permission_classes = [AllowAny]
 
     def create(self, request):
+        """
+        Create users
+        """
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -28,6 +31,9 @@ class UserViewSet(ViewSet):
 
     @action(methods=["POST"], detail=False)
     def login(self, request):
+        """
+        Login with username and password
+        """
         username = request.data.get("username")
         password = request.data.get("password")
 
