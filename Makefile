@@ -6,3 +6,9 @@ makemigrations:
 
 shell:
 	docker compose --env-file .env run web python manage.py shell
+
+test:
+	docker compose --env-file .env run web python manage.py test
+
+clean:
+	docker compose down
