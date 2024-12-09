@@ -55,7 +55,7 @@ class OrganizationViewSet(ViewSet):
     @action(methods=["GET"], detail=True)
     def list_organization_users(self, request, pk=None):
         """
-        List organization users
+        List users wihtin current organization
         """
         try:
             org = Organization.objects.get(pk=pk)
@@ -93,6 +93,9 @@ class OrganizationViewSet(ViewSet):
 
     @action(methods=["GET"], detail=True)
     def clusters(self, request, pk=None):
+        """
+        List of all clusters within current organization
+        """
         try:
             org = Organization.objects.get(id=pk)
             if request.user not in org.users.all():

@@ -16,6 +16,9 @@ class ClusterViewset(viewsets.ViewSet):
     serializer_class = CreateClusterSerializer
 
     def create(self, request):
+        """
+        Create a cluster within an organization
+        """
         data = CreateClusterSerializer(request.data).get_validated_data()
         org_id = data["organization_id"]
         try:
@@ -43,6 +46,9 @@ class ClusterViewset(viewsets.ViewSet):
 
     @action(methods=["GET"], detail=True)
     def deployments(self, request, pk=None):
+        """
+        List down deployments within an cluster
+        """
         try:
             cluster = Cluster.objects.get(id=pk)
             if request.user not in cluster.organization.users.all():

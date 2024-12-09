@@ -15,6 +15,9 @@ class DeploymentViewset(viewsets.ViewSet):
     serializer_class = CreateDeploymentSerializer
 
     def create(self, request):
+        """
+        Creating an deployment on an cluster
+        """
         data = CreateDeploymentSerializer(request.data).get_validated_data()
 
         try:
