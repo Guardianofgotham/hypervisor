@@ -4,7 +4,7 @@ from users.common import ApiSerializer
 
 
 class CreateOrganizationSerializer(ApiSerializer):
-    name = serializers.CharField(required=True)
+    name = serializers.CharField(required=True, help_text="Name of organization")
 
 
 class OrganizationSerializerWithoutInviteCode(serializers.Serializer):
