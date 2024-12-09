@@ -84,7 +84,7 @@ class ClusterViewsetTest(TestCase):
             available_cpu=16,
             available_gpu=8,
         )
-        deployment = Deployment.objects.create(
+        Deployment.objects.create(
             cluster=cluster,
             name="Test Deployment",
             docker_image_path="blah",
