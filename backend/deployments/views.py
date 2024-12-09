@@ -26,9 +26,9 @@ class DeploymentViewset(viewsets.ViewSet):
                 )
 
             if (
-                cluster.available_ram < data["required_ram"]
-                or cluster.available_cpu < data["required_cpu"]
-                or cluster.available_gpu < data["required_gpu"]
+                cluster.total_ram < data["required_ram"]
+                or cluster.total_cpu < data["required_cpu"]
+                or cluster.total_gpu < data["required_gpu"]
             ):
                 return Response(
                     status=status.HTTP_400_BAD_REQUEST,

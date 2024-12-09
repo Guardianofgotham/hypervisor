@@ -1,10 +1,14 @@
 from rest_framework import serializers
 
+from deployments.models import Deployment
 from clusters.models import Cluster
 from users.common import ApiSerializer
+from django.db.models import Count
 
 
 class ClusterSerializer(serializers.ModelSerializer):
+    deployment_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Cluster
         fields = [
@@ -17,7 +21,19 @@ class ClusterSerializer(serializers.ModelSerializer):
             "available_ram",
             "available_cpu",
             "available_gpu",
+            "deployment_count",
         ]
+
+    def get_deployment_count(self, obj):
+        deployments = (
+            Deployment.objects.filter(cluster_id=obj.id)
+            .values("status")
+            .annotate(count=Count("id"))
+        )
+        status_count = {
+            deployment["status"]: deployment["count"] for deployment in deployments
+        }
+        return status_count
 
 
 class CreateClusterSerializer(ApiSerializer):
